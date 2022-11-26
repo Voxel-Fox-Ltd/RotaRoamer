@@ -1,0 +1,53 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Manage Availability{% endblock title %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ static('css/dashboard/availability.css') }}">
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">Manage your availability</h1>
+            <h2 class="subtitle">Create ranges of dates that people can say they're available for</h2>
+            <br />
+
+            <form id="create-new-availability" action="javascript:void(0)" onsubmit="createNewAvailability();">
+                <div class="field">
+                    <label class="label required">Start date</label>
+                    <div class="control">
+                        <input class="input" type="date" name="start" required />
+                    </div>
+                </div> <!-- field -->
+                <div class="field">
+                    <label class="label required">End date</label>
+                    <div class="control">
+                        <input class="input" type="date" name="end" required />
+                    </div>
+                </div> <!-- field -->
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="submit">
+                            Create new availability
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="availability-list">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ static('js/dashboard/availability.js') }}"></script>
+<script type="text/javascript">
+    setDefaultDates();
+    getAllAvailability();
+</script>
+{% endblock body %}

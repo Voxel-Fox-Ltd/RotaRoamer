@@ -25,5 +25,14 @@ CREATE TABLE IF NOT EXISTS people(
     name CITEXT,
     email CITEXT,
     role_id UUID REFERENCES roles(id) ON DELETE SET NULL,
+    maximum_working_hours SMALLINT NOT NULL DEFAULT 0,
     UNIQUE (owner_id, email)  -- No duplicate emails
+);
+
+
+CREATE TABLE IF NOT EXISTS availability(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    start_date TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL
 );
