@@ -1,0 +1,26 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Manage{% endblock title %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">Your Dashboard</h1>
+            <h2 class="subtitle">Manage your rotas, staff, and availability</h2>
+            <hr class="divider" />
+            <h4 class="title is-4">
+                <a href="/dashboard/users">User Management</a>
+            </h4>
+            <h4 class="title is-4">
+                <a href="/dashboard/availability">Availability Management</a>
+            </h4>
+            <h4 class="title is-4">
+                <a href="/dashboard/rotas">Rota Management</a>
+            </h4>
+        </div>
+    </div>
+</div>
+{% endblock body %}
