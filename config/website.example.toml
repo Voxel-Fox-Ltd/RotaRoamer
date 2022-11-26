@@ -1,0 +1,13 @@
+website_base_url = "http://localhost:8080"  # This will be used to dynamically make the redirect url internally.
+routes = [ "frontend", "backend", ]  # These routes `/website/<filename>` will have their `routes` variable imported which will be loaded into the bot's route table.
+cookie_encryption_key = ""  # The key used to encrypt the cookie. This should be a random string of characters of length 32.
+
+# This data is passed directly over to asyncpg.connect().
+[database]
+    type = "sqlite"  # postgres, sqlite, mysql
+    enabled = true
+    user = ""
+    password = ""
+    database = ".database.sqlite"
+    host = "127.0.0.1"
+    port = 5432
