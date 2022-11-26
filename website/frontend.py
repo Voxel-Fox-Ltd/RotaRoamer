@@ -20,6 +20,13 @@ async def dashboard(_: Request):
     return {}
 
 
+@routes.get("/dashboard/roles")
+@template("dashboard/roles.j2")
+@utils.requires_login()
+async def dashboard_roles(_: Request):
+    return {}
+
+
 @routes.get("/dashboard/users")
 @template("dashboard/users.j2")
 @utils.requires_login()
