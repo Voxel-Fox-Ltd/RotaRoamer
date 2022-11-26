@@ -74,10 +74,14 @@ function createAvailabilityNode(id, start, end) {
         let endMonthName = getMonthName(end.getUTCMonth());
         newAvEnd.innerHTML = `<b>End</b>: ${end.getUTCDate()}${endOrdinal} ${endMonthName} ${end.getYear() + 1900}`;
     }
+    let newAvCheckButton = document.createElement("a");
+    newAvCheckButton.href = `/dashboard/availability/${id}`;
+    newAvCheckButton.appendChild(document.createTextNode("Check filled availability"));
 
     newAv.appendChild(newAvId);
     newAv.appendChild(newAvStart);
     newAv.appendChild(newAvEnd);
+    newAv.appendChild(newAvCheckButton);
     return newAv;
 }
 
@@ -113,11 +117,25 @@ async function createNewAvailability() {
     let button = form.querySelector("button");
     button.classList.add("is-loading");
 
-    // AJAX our new role
+    // Make sure the dates aren't too far apart
     let startDateNode = form.querySelector("[name='start']");
     let startDate = startDateNode.valueAsDate;
     let endDateNode = form.querySelector("[name='end']");
     let endDate = endDateNode.valueAsDate;
+    if(endDate < startDate) {
+        alert("Start date must be before end date.");
+        return;
+    }
+    else if(endDate == startDate) {
+        alert("Start and end date cannot be the same.");
+        return;
+    }
+    else if((endDate - startDate) / (1_000 * 60 * 60 * 24) >= 22) {
+        alert("End date can be a max of 21 days after the start date.");
+        return;  // I don't bother validating this in the API.
+    }
+
+    // AJAX our new role
     let site = await fetch(
         "/api/create_availability",
         {
