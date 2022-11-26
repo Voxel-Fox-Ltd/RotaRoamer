@@ -27,10 +27,10 @@ async def dashboard_roles(_: Request):
     return {}
 
 
-@routes.get("/dashboard/users")
-@template("dashboard/users.j2")
+@routes.get("/dashboard/people")
+@template("dashboard/people.j2")
 @utils.requires_login()
-async def dashboard_users(_: Request):
+async def dashboard_people(_: Request):
     return {}
 
 

@@ -1,4 +1,37 @@
 /**
+ * Create a new role node that can be added to the DOM.
+ * */
+function createRoleNode(id, name, parentId) {
+    let newRole = document.createElement("div");
+    newRole.classList.add("role");
+    newRole.dataset.id = id;
+
+    let newRoleId = document.createElement("p");
+    newRoleId.innerHTML = `<b>ID</b>: ${id}`;
+    let newRoleName = document.createElement("p");
+    newRoleName.innerHTML = `<b>Name</b>: ${name}`;
+    let newRoleParent = document.createElement("p");
+    if(parentId != null) {
+        let parent = document.querySelector(`form option[value='${parentId}']`);
+        if(parent != null) {
+            newRoleParent.innerHTML = `<b>Parent</b>: ${parent.textContent}`;
+        }
+        else {
+            newRoleParent.innerHTML = `<b>Parent</b>: (Could not get role name)`;
+        }
+    }
+    else {
+        newRoleParent.innerHTML = `<b>Parent</b>: (None)`;
+    }
+
+    newRole.appendChild(newRoleId);
+    newRole.appendChild(newRoleName);
+    newRole.appendChild(newRoleParent);
+    return newRole;
+}
+
+
+/**
  * Get all of the roles under the user's ID via the API;
  * add all of those roles to the page, clearing the ones that are currently
  * on the page.
@@ -9,7 +42,7 @@ async function getAllRoles() {
     let site = await fetch(
         "/api/roles",
         {
-            method: "get",
+            method: "GET",
         },
     );
     let siteData = await site.json();
@@ -34,25 +67,7 @@ async function getAllRoles() {
     let roleListNode = document.querySelector("#role-list");
     roleListNode.innerHTML = "";
     for(let r of data) {
-        let newRole = document.createElement("div");
-        newRole.classList.add("role");
-
-        let newRoleId = document.createElement("p");
-        newRoleId.innerHTML = `<b>ID</b>: ${r.id}`;
-        let newRoleName = document.createElement("p");
-        newRoleName.innerHTML = `<b>Name</b>: ${r.name}`;
-        let newRoleParent = document.createElement("p");
-        if(r.parent) {
-            let parent = document.querySelector(`form option[value='${r.parent}']`);
-            newRoleParent.innerHTML = `<b>Parent</b>: <i>${parent.textContent}</i>`;
-        }
-        else {
-            newRoleParent.innerHTML = `<b>Parent</b>: (None)`;
-        }
-
-        newRole.appendChild(newRoleId);
-        newRole.appendChild(newRoleName);
-        newRole.appendChild(newRoleParent);
+        let newRole = createRoleNode(r.id, r.name, r.parent);
         roleListNode.appendChild(newRole);
     }
 }
@@ -90,28 +105,8 @@ async function createNewRole() {
 
     // Add new role to list
     let roleListNode = document.querySelector("#role-list");
-    {
-        let newRole = document.createElement("div");
-        newRole.classList.add("role");
-
-        let newRoleId = document.createElement("p");
-        newRoleId.innerHTML = `<b>ID</b>: ${data.id}`;
-        let newRoleName = document.createElement("p");
-        newRoleName.innerHTML = `<b>Name</b>: ${data.name}`;
-        let newRoleParent = document.createElement("p");
-        if(data.parent) {
-            let parent = roleParentNode.querySelector(`option[value='${data.parent}']`);
-            newRoleParent.innerHTML = `<b>Parent</b>: <i>${parent.textContent}</i>`;
-        }
-        else {
-            newRoleParent.innerHTML = `<b>Parent</b>: (None)`;
-        }
-
-        newRole.appendChild(newRoleId);
-        newRole.appendChild(newRoleName);
-        newRole.appendChild(newRoleParent);
-        roleListNode.appendChild(newRole);
-    }
+    let newRole = createRoleNode(data.id, data.name, data.parent);
+    roleListNode.appendChild(newRole);
 
     // Add new role to parent options
     let newRoleOption = document.createElement("option");

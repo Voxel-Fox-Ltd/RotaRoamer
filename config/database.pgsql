@@ -17,3 +17,13 @@ CREATE TABLE IF NOT EXISTS roles(
     parent_id UUID REFERENCES roles(id) ON DELETE SET NULL,
     UNIQUE (owner_id, name)  -- No duplicate names
 );
+
+
+CREATE TABLE IF NOT EXISTS people(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    name CITEXT,
+    email CITEXT,
+    role_id UUID REFERENCES roles(id) ON DELETE SET NULL,
+    UNIQUE (owner_id, email)  -- No duplicate emails
+);

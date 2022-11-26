@@ -1,0 +1,13 @@
+#person-list {
+  margin-top: 10px;
+}
+#person-list .person {
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;
+}
+#person-list .person:not(:last-of-type) {
+  margin-bottom: 10px;
+}
+
+/*# sourceMappingURL=people.css.map */
