@@ -1,0 +1,46 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Manage Users{% endblock title %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">Manage your roles</h1>
+            <h2 class="subtitle">Set what positions your staff can work as</h2>
+            <br />
+
+            <form action="javascript:void(0)">
+                <div class="field">
+                    <label class="label required">Role name</label>
+                    <div class="control">
+                        <input class="input" type="text" name="role-name" required />
+                    </div>
+                </div> <!-- field -->
+                <div class="field">
+                    <label class="label">Role parent</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="role-parent">
+                                <option value="" default>(None)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div> <!-- field -->
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="submit">
+                            Create new role
+                        </button>
+                    </div>
+                </div> <!-- field -->
+            </form>
+
+            <div id="position-list">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
