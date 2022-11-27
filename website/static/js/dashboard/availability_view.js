@@ -33,31 +33,22 @@ async function getAllAvailability() {
     availabilityData = await availabilitySite.json();
 
     // Add each person to the table
-    for(let i of availabilityData.data.data) {
+    for(let i of availabilityData.data) {
         let tbody = document.querySelector("tbody");
         let newRow = document.createElement("tr");
         // newRow.dataset.id = i.id;
         let nameCol = document.createElement("th");
         nameCol.scope = "row"
         nameCol.dataset.id = i.person_id;
-        nameCol.appendChild(document.createTextNode(i.name));
+        nameCol.appendChild(document.createTextNode(i.person_name));
         newRow.appendChild(nameCol)
         for(let r of i.availability) {
             let avCol = document.createElement("td");
+            avCol.classList.add("availability-cell")
             avCol.textContent = r;
             avCol.dataset.value = r;
             newRow.appendChild(avCol);
         }
-        tbody.appendChild(newRow)
-    }
-    for(let [i, o] of Object.entries(availabilityData.data.remaining)) {
-        let tbody = document.querySelector("tbody");
-        let newRow = document.createElement("tr");
-        let nameCol = document.createElement("th");
-        nameCol.scope = "row"
-        nameCol.dataset.id = i;
-        nameCol.appendChild(document.createTextNode(o));
-        newRow.appendChild(nameCol)
         tbody.appendChild(newRow)
     }
 }

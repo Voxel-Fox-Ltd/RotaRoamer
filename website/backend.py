@@ -61,44 +61,34 @@ async def api_get_user_availability(request: Request):
         availability_rows = await db.call(
             """
             SELECT
-                id, person_id, availability
+                filled_availability.id,
+                people.name AS person_name,
+                filled_availability.person_id,
+                filled_availability.availability
             FROM
                 filled_availability
+            LEFT JOIN
+                people
+            ON
+                people.id = filled_availability.person_id
             WHERE
                 availability_id = $1
             """,
             availability_id,
         )
 
-    # Set up the people names
-    people_names = {
-        str(i['id']): i['name']
-        for i in person_rows
-    }
-
     # Sort out the availability and names associated
-    ret = []
+    data = []
     for r in availability_rows:
-        try:
-            ret.append({
-                "id": str(r['id']),
-                "person_name": people_names.pop(str(r['person_id'])),
-                "person_id": str(r['person_id']),
-                "availability": r['availability'],
-            })
-        except KeyError:
-            return json_response(
-                {
-                    "message": "Failed to work out people names."
-                },
-                status=500,
-            )
+        data.append({
+            "id": str(r['id']),
+            "person_name": r['person_name'],
+            "person_id": str(r['person_id']),
+            "availability": r['availability'],
+        })
     return json_response(
         {
-            "data": {
-                "data": ret,
-                "remaining": people_names,
-            },
+            "data": data,
         },
         status=200,
     )
