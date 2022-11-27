@@ -137,7 +137,7 @@ async function createNewAvailability() {
 
     // AJAX our new role
     let site = await fetch(
-        "/api/create_availability",
+        "/api/availability",
         {
             method: "POST",
             body: JSON.stringify({

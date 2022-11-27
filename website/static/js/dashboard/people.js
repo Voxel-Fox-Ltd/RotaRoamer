@@ -98,7 +98,7 @@ async function createNewPerson() {
     let personRoleNode = form.querySelector("[name='role']");
     let personRole = personRoleNode.value;
     let site = await fetch(
-        "/api/create_person",
+        "/api/people",
         {
             method: "POST",
             body: JSON.stringify({

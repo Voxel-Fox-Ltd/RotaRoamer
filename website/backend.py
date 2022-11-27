@@ -142,7 +142,7 @@ async def api_get_availbility(request: Request):
     )
 
 
-@routes.post("/api/create_availability")
+@routes.post("/api/availability")
 @utils.requires_login()
 async def api_post_create_availability(request: Request):
     """
@@ -254,7 +254,7 @@ async def api_get_people(request: Request):
     )
 
 
-@routes.post("/api/create_person")
+@routes.post("/api/people")
 @utils.requires_login()
 async def api_post_create_person(request: Request):
     """
@@ -372,7 +372,7 @@ async def api_get_roles(request: Request):
     )
 
 
-@routes.post("/api/create_role")
+@routes.post("/api/roles")
 @utils.requires_login()
 async def api_post_create_role(request: Request):
     """

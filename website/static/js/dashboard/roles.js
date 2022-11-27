@@ -86,7 +86,7 @@ async function createNewRole() {
     let roleParentNode = form.querySelector("[name='role-parent']");
     let roleParent = roleParentNode.value;
     let site = await fetch(
-        "/api/create_role",
+        "/api/roles",
         {
             method: "POST",
             body: JSON.stringify({
