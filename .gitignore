@@ -4,3 +4,4 @@ config/config.toml
 config/website.toml
 *.sqlite
 website/static/css/
+website/static/sass/bulma-0.9.4
