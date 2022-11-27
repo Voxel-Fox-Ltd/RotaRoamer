@@ -24,6 +24,11 @@ async def api_get_availbility(request: Request):
     assert login_id, "Missing login ID from session."
 
     # Add the new role to the database
+    args = [login_id]
+    where = ""
+    if request.query.get("id"):
+        where = "AND id = $2"
+        args.append(request.query['id'])
     async with vbu.Database() as db:
         rows = await db.call(
             """
@@ -33,8 +38,9 @@ async def api_get_availbility(request: Request):
                 availability
             WHERE
                 owner_id = $1
-            """,
-            login_id,
+            {0}
+            """.format(where),
+            *args,
         )
 
     # And done

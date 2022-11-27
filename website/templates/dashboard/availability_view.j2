@@ -1,0 +1,28 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Manage Availability{% endblock title %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ static('css/dashboard/availability_view.css') }}">
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <table class="table">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{{ static('js/dashboard/availability_view.js') }}"></script>
+<script type="text/javascript">
+    getAllAvailability();
+</script>
+{% endblock body %}
