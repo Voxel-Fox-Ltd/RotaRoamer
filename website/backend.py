@@ -254,6 +254,60 @@ async def api_get_people(request: Request):
     )
 
 
+@routes.delete("/api/people")
+@utils.requires_login()
+async def api_delete_person(request: Request):
+    """
+    Delete a person from the database.
+    """
+
+    # Validate the new role
+    data = request.query
+    required_keys = {"id",}
+    if len(required_keys.intersection(set(data.keys()))) != len(required_keys):
+        return json_response(
+            {
+                "message": "Invalid request - missing ID key.",
+            },
+            status=400,
+        )
+
+    # Get the ID of the logged in user
+    session = await aiohttp_session.get_session(request)
+    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    assert login_id, "Missing login ID from session."
+
+    # Add the new role to the database
+    async with vbu.Database() as db:
+        rows = await db.call(
+            """
+            DELETE FROM
+                people
+            WHERE
+                owner_id = $1
+            AND
+                id = $2
+            RETURNING *
+            """,
+            login_id, data['id'],
+        )
+
+    # And done
+    if not rows:
+        return json_response(
+            {
+                "message": "User not found.",
+            },
+            status=404,
+        )
+    return json_response(
+        {
+            "message": "",
+        },
+        status=200,
+    )
+
+
 @routes.post("/api/people")
 @utils.requires_login()
 async def api_post_create_person(request: Request):

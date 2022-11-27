@@ -1,3 +1,33 @@
+async function deletePerson(event) {
+
+    // Confirm
+    let c = confirm("Are you sure you want to delete this person?");
+    if(!c) return;
+
+    // Get the button that was clicked
+    let personId = event.target.value;
+    event.target.classList.add("is-loading");
+
+    // Do the API request
+    let site = await fetch(
+        `/api/people?id=${personId}`,
+        {
+            method: "DELETE",
+        },
+    );
+    if(!site.ok) {
+        let json = await site.json();
+        alert(json.message);
+        event.target.classList.remove("is-loading");
+        return
+    }
+
+    // Remove the node
+    let personNode = document.querySelector(`.person[data-id='${personId}']`);
+    personNode.remove();
+}
+
+
 /**
  * Create a new person node that can be added to the DOM.
  * */
@@ -20,11 +50,19 @@ function createPersonNode(id, name, email, roleId) {
     else {
         newPersonRole.innerHTML = `<b>Role</b>: (Could not get role name)`;
     }
+    let newPersonDeleteButton = document.createElement("button")
+    newPersonDeleteButton.classList.add("button");
+    newPersonDeleteButton.classList.add("is-danger");
+    newPersonDeleteButton.textContent = `Delete ${name}`;
+    newPersonDeleteButton.setAttribute("role", "delete");
+    newPersonDeleteButton.onclick = deletePerson;
+    newPersonDeleteButton.value = id;
 
     newPerson.appendChild(newPersonId);
     newPerson.appendChild(newPersonName);
     newPerson.appendChild(newPersonEmail);
     newPerson.appendChild(newPersonRole);
+    newPerson.appendChild(newPersonDeleteButton);
     return newPerson;
 }
 
