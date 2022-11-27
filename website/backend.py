@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+import uuid
 
 from aiohttp.web import Request, RouteTableDef, json_response
 import aiohttp_session
@@ -9,6 +10,98 @@ from . import utils
 
 
 routes = RouteTableDef()
+
+
+@routes.get("/api/user_availability")
+@utils.requires_login()
+async def api_get_user_availability(request: Request):
+    """
+    Return a dict of users and their related availability for the range of
+    time, filling with empty strings.
+    This does not check the validity of the given ID.
+    """
+
+    # Get the ID of the logged in user
+    session = await aiohttp_session.get_session(request)
+    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    assert login_id, "Missing login ID from session."
+
+    # Make sure they've given a valid ID.
+    availability_id = request.query.get("id")
+    if not availability_id:
+        return json_response(
+            {
+                "message": "Missing ID from GET params.",
+            },
+            status=400,
+        )
+    try:
+        uuid.UUID(availability_id)
+    except:
+        return json_response(
+            {
+                "message": "ID given is not a valid UUID.",
+            },
+            status=400,
+        )
+
+    # Get all people's availability
+    async with vbu.Database() as db:
+        person_rows = await db.call(
+            """
+            SELECT
+                id, name
+            FROM
+                people
+            WHERE
+                owner_id = $1
+            """,
+            login_id,
+        )
+        availability_rows = await db.call(
+            """
+            SELECT
+                id, person_id, availability
+            FROM
+                filled_availability
+            WHERE
+                availability_id = $1
+            """,
+            availability_id,
+        )
+
+    # Set up the people names
+    people_names = {
+        str(i['id']): i['name']
+        for i in person_rows
+    }
+
+    # Sort out the availability and names associated
+    ret = []
+    for r in availability_rows:
+        try:
+            ret.append({
+                "id": str(r['id']),
+                "person_name": people_names.pop(str(r['person_id'])),
+                "person_id": str(r['person_id']),
+                "availability": r['availability'],
+            })
+        except KeyError:
+            return json_response(
+                {
+                    "message": "Failed to work out people names."
+                },
+                status=500,
+            )
+    return json_response(
+        {
+            "data": {
+                "data": ret,
+                "remaining": people_names,
+            },
+        },
+        status=200,
+    )
 
 
 @routes.get("/api/availability")

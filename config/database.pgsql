@@ -36,3 +36,11 @@ CREATE TABLE IF NOT EXISTS availability(
     start_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL
 );
+
+
+CREATE TABLE IF NOT EXISTS filled_availability(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    availability_id UUID NOT NULL REFERENCES availability(id) ON DELETE CASCADE,
+    person_id UUID NOT NULL REFERENCES people(id) ON DELETE CASCADE,
+    availability TEXT[] DEFAULT '{}'
+);
