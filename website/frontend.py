@@ -1,3 +1,5 @@
+import uuid
+
 from aiohttp.web import HTTPFound, RouteTableDef, Request
 from aiohttp_jinja2 import template
 import aiohttp_session
@@ -86,3 +88,58 @@ async def dashboard_availability_view(request: Request):
 @utils.requires_login()
 async def dashboard_rotas(_: Request):
     return {}
+
+
+@routes.get("/fill/{id}")
+@template("fill.j2")
+async def fill_availability(request: Request):
+    """
+    Show the admin the filled out availability for the given ID.
+    If the dates on the availability have passed (both start and end), show
+    the users at the time.
+    If the dates are still yet to happen, show current users only.
+    """
+
+    # Make sure the ID is a valid UUID
+    try:
+        availability_id = uuid.UUID(request.match_info['id'])
+    except:
+        return HTTPFound("/")
+
+    # Verify the given ID exists
+    async with vbu.Database() as db:
+        rows = await db.call(
+            """
+            SELECT
+                filled_availability.availability_id,
+                filled_availability.person_id,
+                people.name AS person_name,
+                filled_availability.availability,
+                availability.start_date,
+                availability.end_date
+            FROM
+                filled_availability
+            LEFT JOIN
+                people
+            ON
+                people.id = filled_availability.person_id
+            LEFT JOIN
+                availability
+            ON
+                availability.id = filled_availability.availability_id
+            WHERE
+                filled_availability.id = $1
+            """,
+            availability_id,
+        )
+    if not rows:
+        return HTTPFound("/")
+
+    # And we good - everything else can be AJAXd
+    return {
+        "person_name": rows[0]['person_name'],
+        "person_id": rows[0]['person_id'],
+        "start_date": rows[0]['start_date'],
+        "end_date": rows[0]['end_date'],
+        "current": rows[0]['availability'],
+    }

@@ -1,0 +1,39 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Fill Availability{% endblock title %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ static('css/fill.css') }}">
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">Fill your availability</h1>
+            <h2 class="subtitle">You should be {{ person_name }}, I think</h2>
+            <br />
+            <table
+                    data-start="{{ start_date.isoformat() }}"
+                    data-end="{{ end_date.isoformat() }}">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Availability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="submit" class="button" onclick="submitAvailability();">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ static('js/fill.js') }}"></script>
+<script type="text/javascript">generateTable();</script>
+{% endblock body %}
