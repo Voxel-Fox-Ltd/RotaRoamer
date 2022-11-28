@@ -1,3 +1,35 @@
+async function deleteRole(event) {
+
+    // Confirm
+    let c = confirm("Are you sure you want to delete this role?");
+    if(!c) return;
+
+    // Get the button that was clicked
+    let roleId = event.target.value;
+    event.target.classList.add("is-loading");
+
+    // Do the API request
+    let site = await fetch(
+        `/api/roles?id=${roleId}`,
+        {
+            method: "DELETE",
+        },
+    );
+    if(!site.ok) {
+        let json = await site.json();
+        alert(json.message);
+        event.target.classList.remove("is-loading");
+        return
+    }
+
+    // Remove the node
+    // let roleNode = document.querySelector(`.role[data-id='${roleId}']`);
+    // roleNode.remove();
+    // window.location.reload();
+    getAllRoles();
+}
+
+
 /**
  * Create a new role node that can be added to the DOM.
  * */
@@ -23,10 +55,18 @@ function createRoleNode(id, name, parentId) {
     else {
         newRoleParent.innerHTML = `<b>Parent</b>: (None)`;
     }
+    let newDeleteButton = document.createElement("button")
+    newDeleteButton.classList.add("button");
+    newDeleteButton.classList.add("is-danger");
+    newDeleteButton.textContent = `Delete ${name}`;
+    newDeleteButton.setAttribute("role", "delete");
+    newDeleteButton.onclick = deleteRole;
+    newDeleteButton.value = id;
 
     newRole.appendChild(newRoleId);
     newRole.appendChild(newRoleName);
     newRole.appendChild(newRoleParent);
+    newRole.appendChild(newDeleteButton);
     return newRole;
 }
 
