@@ -254,6 +254,87 @@ async def api_get_people(request: Request):
     )
 
 
+@routes.patch("/api/people")
+@utils.requires_login()
+async def api_patch_person(request: Request):
+    """
+    Update a person's attributes in the database.
+    """
+
+    # Validate the new role
+    query = request.query
+    required_keys = {"id",}
+    if len(required_keys.intersection(set(query.keys()))) != len(required_keys):
+        return json_response(
+            {
+                "message": "Invalid request - missing ID key.",
+            },
+            status=400,
+        )
+    try:
+        data = await request.json()
+    except:
+        return json_response(
+            {
+                "message": "Failed to read JSON in request.",
+            },
+            status=400,
+        )
+    required_keys = {"name", "email", "role",}
+    if len(required_keys.intersection(set(data.keys()))) != len(required_keys):
+        return json_response(
+            {
+                "message": "Invalid request - missing keys.",
+            },
+            status=400,
+        )
+
+    # Get the ID of the logged in user
+    session = await aiohttp_session.get_session(request)
+    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    assert login_id, "Missing login ID from session."
+
+    # Add the new role to the database
+    async with vbu.Database() as db:
+        rows = await db.call(
+            """
+            UPDATE
+                people
+            SET
+                name = $3,
+                email = $4,
+                role_id = $5
+            WHERE
+                owner_id = $1
+            AND
+                id = $2
+            RETURNING *
+            """,
+            login_id, query['id'], data['name'],
+            data['email'], data['role'],
+        )
+
+    # And done
+    if not rows:
+        return json_response(
+            {
+                "message": "User not found.",
+            },
+            status=404,
+        )
+    return json_response(
+        {
+            "data": {
+                "id": str(rows[0]['id']),
+                "name": rows[0]['name'],
+                "email": rows[0]['email'],
+                "role": str(rows[0]['role_id']) if rows[0]['role_id'] else None,
+            }
+        },
+        status=200,
+    )
+
+
 @routes.delete("/api/people")
 @utils.requires_login()
 async def api_delete_person(request: Request):
@@ -428,7 +509,7 @@ async def api_get_roles(request: Request):
 
 @routes.delete("/api/roles")
 @utils.requires_login()
-async def api_delete_person(request: Request):
+async def api_delete_role(request: Request):
     """
     Delete a role from the database.
     """

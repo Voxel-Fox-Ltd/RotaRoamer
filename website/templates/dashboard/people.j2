@@ -17,7 +17,8 @@
             <h2 class="subtitle">See who works for you and who lives in your rotas</h2>
             <br />
 
-            <form id="create-new-person" action="javascript:void(0)" onsubmit="createNewPerson();">
+            <form id="create-new-person" action="javascript:void(0)"">
+                <input class="input" type="hidden" name="id" />
                 <div class="field">
                     <label class="label required">Name</label>
                     <div class="control">
@@ -40,8 +41,26 @@
                 </div> <!-- field -->
                 <div class="field">
                     <div class="control">
-                        <button class="button" type="submit">
+                        <button
+                                class="button"
+                                type="submit"
+                                role="create"
+                                formaction="javascript:createNewPerson();">
                             Create new person
+                        </button>
+                        <button
+                                class="button hidden"
+                                type="submit"
+                                role="edit"
+                                formaction="javascript:createNewPerson();">
+                            Edit person
+                        </button>
+                        <button
+                                class="button hidden"
+                                type="submit"
+                                role="cancel"
+                                formaction="javascript:cancelEditPerson();">
+                            Cancel
                         </button>
                     </div>
                 </div> <!-- field -->

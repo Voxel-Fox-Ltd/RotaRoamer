@@ -1,3 +1,50 @@
+function cancelEditPerson() {
+
+    // Hide just the user we're editing
+    for(let p of document.querySelectorAll(".person.hidden")) {
+        p.classList.remove("hidden");
+    }
+
+    // Update the insert field
+    document.querySelector(`#create-new-person [name='id']`).value = "";
+    document.querySelector(`#create-new-person [name='name']`).value = "";
+    document.querySelector(`#create-new-person [name='email']`).value = "";
+    document.querySelector(`#create-new-person [name='role']`).value = "";
+    for(let i of document.querySelectorAll(`#create-new-person [role='create']`)) {
+        i.classList.remove("hidden");
+    }
+    for(let i of document.querySelectorAll(`#create-new-person [role]:not([role='create'])`)) {
+        i.classList.add("hidden");
+    }
+}
+
+
+async function editPerson(event) {
+
+    // Get the button that was clicked
+    let personId = event.target.value;
+
+    // Hide just the user we're editing
+    for(let p of document.querySelectorAll(".person.hidden")) {
+        p.classList.remove("hidden");
+    }
+    let personNode = document.querySelector(`.person[data-id='${personId}']`);
+    personNode.classList.add("hidden");
+
+    // Update the insert field
+    document.querySelector(`#create-new-person [name='id']`).value = personNode.dataset.id;
+    document.querySelector(`#create-new-person [name='name']`).value = personNode.dataset.name;
+    document.querySelector(`#create-new-person [name='email']`).value = personNode.dataset.email;
+    document.querySelector(`#create-new-person [name='role']`).value = personNode.dataset.role;
+    for(let i of document.querySelectorAll(`#create-new-person [role='create']`)) {
+        i.classList.add("hidden");
+    }
+    for(let i of document.querySelectorAll(`#create-new-person [role]:not([role='create'])`)) {
+        i.classList.remove("hidden");
+    }
+}
+
+
 async function deletePerson(event) {
 
     // Confirm
@@ -35,6 +82,9 @@ function createPersonNode(id, name, email, roleId) {
     let newPerson = document.createElement("div");
     newPerson.classList.add("person");
     newPerson.dataset.id = id;
+    newPerson.dataset.name = name;
+    newPerson.dataset.email = email;
+    newPerson.dataset.role = roleId;
 
     let newPersonId = document.createElement("p");
     newPersonId.innerHTML = `<b>ID</b>: ${id}`;
@@ -50,6 +100,7 @@ function createPersonNode(id, name, email, roleId) {
     else {
         newPersonRole.innerHTML = `<b>Role</b>: (Could not get role name)`;
     }
+
     let newPersonDeleteButton = document.createElement("button")
     newPersonDeleteButton.classList.add("button");
     newPersonDeleteButton.classList.add("is-danger");
@@ -58,11 +109,19 @@ function createPersonNode(id, name, email, roleId) {
     newPersonDeleteButton.onclick = deletePerson;
     newPersonDeleteButton.value = id;
 
+    let newPersonEditButton = document.createElement("button")
+    newPersonEditButton.classList.add("button");
+    newPersonEditButton.textContent = `Edit ${name}`;
+    newPersonEditButton.setAttribute("role", "edit");
+    newPersonEditButton.onclick = editPerson;
+    newPersonEditButton.value = id;
+
     newPerson.appendChild(newPersonId);
     newPerson.appendChild(newPersonName);
     newPerson.appendChild(newPersonEmail);
     newPerson.appendChild(newPersonRole);
     newPerson.appendChild(newPersonDeleteButton);
+    newPerson.appendChild(newPersonEditButton);
     return newPerson;
 }
 
@@ -129,6 +188,8 @@ async function createNewPerson() {
     button.classList.add("is-loading");
 
     // AJAX our new person
+    let personIdNode = form.querySelector("[name='id']");
+    let personId = personIdNode.value;
     let personNameNode = form.querySelector("[name='name']");
     let personName = personNameNode.value;
     let personEmailNode = form.querySelector("[name='email']");
@@ -136,9 +197,9 @@ async function createNewPerson() {
     let personRoleNode = form.querySelector("[name='role']");
     let personRole = personRoleNode.value;
     let site = await fetch(
-        "/api/people",
+        personId ? `/api/people?id=${personId}` : "/api/people",
         {
-            method: "POST",
+            method: personId ? "PATCH" : "POST",
             body: JSON.stringify({
                 name: personName,
                 email: personEmail,
@@ -155,11 +216,16 @@ async function createNewPerson() {
     let data = siteData.data;
 
     // Add new role to list
+    if(personId) {
+        let personNode = document.querySelector(`.person[data-id='${personId}']`);
+        personNode.remove();
+    }
     let newPerson = createPersonNode(data.id, data.name, data.email, data.role);
     let personListNode = document.querySelector("#person-list");
     personListNode.appendChild(newPerson);
 
     // Reset form
+    personIdNode.value = "";
     personNameNode.value = "";
     personEmailNode.value = "";
     button.classList.remove("is-loading");
