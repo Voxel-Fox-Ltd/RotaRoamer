@@ -17,18 +17,19 @@
             <h2 class="subtitle">Set what positions your staff can work as</h2>
             <br />
 
-            <form id="create-new-role" action="javascript:void(0)" onsubmit="createNewRole();">
+            <form id="create-new-role" action="javascript:void(0)">
+                <input class="input" type="hidden" name="id" required />
                 <div class="field">
                     <label class="label required">Role name</label>
                     <div class="control">
-                        <input class="input" type="text" name="role-name" required />
+                        <input class="input" type="text" name="name" required />
                     </div>
                 </div> <!-- field -->
                 <div class="field">
                     <label class="label">Role parent</label>
                     <div class="control">
                         <div class="select">
-                            <select name="role-parent">
+                            <select name="parent">
                                 <option value="" default>(None)</option>
                             </select>
                         </div>
@@ -36,8 +37,26 @@
                 </div> <!-- field -->
                 <div class="field">
                     <div class="control">
-                        <button class="button" type="submit">
+                        <button
+                                class="button"
+                                type="submit"
+                                role="create"
+                                formaction="javascript:createNewRole();">
                             Create new role
+                        </button>
+                        <button
+                                class="button hidden"
+                                type="submit"
+                                role="edit"
+                                formaction="javascript:createNewRole();">
+                            Edit role
+                        </button>
+                        <button
+                                class="button hidden"
+                                type="submit"
+                                role="cancel"
+                                formaction="javascript:cancelEditRole();">
+                            Cancel edit
                         </button>
                     </div>
                 </div> <!-- field -->

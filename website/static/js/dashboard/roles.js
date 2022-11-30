@@ -1,3 +1,46 @@
+function cancelEditRole() {
+
+    // Hide just the user we're editing
+    for(let p of document.querySelectorAll(".role.hidden")) {
+        p.classList.remove("hidden");
+    }
+
+    // Update the insert field
+    document.querySelector(`#create-new-role [name='id']`).value = "";
+    document.querySelector(`#create-new-role [name='name']`).value = "";
+    document.querySelector("#create-new-role [name='parent']").value = "";
+    for(let i of document.querySelectorAll(`#create-new-role [role='create']`)) {
+        i.classList.remove("hidden");
+    }
+    for(let i of document.querySelectorAll(`#create-new-role [role]:not([role='create'])`)) {
+        i.classList.add("hidden");
+    }
+}
+
+
+function editRole(event) {
+
+    // Hide the node
+    let roleId = event.target.value;
+    for(let p of document.querySelectorAll(".role.hidden")) {
+        p.classList.remove("hidden");
+    }
+    let roleNode = document.querySelector(`.role[data-id='${roleId}']`);
+    roleNode.classList.add("hidden");
+
+    // Change the values of the inputs
+    document.querySelector("#create-new-role [name='id']").value = roleNode.dataset.id;
+    document.querySelector("#create-new-role [name='name']").value = roleNode.dataset.name;
+    document.querySelector("#create-new-role [name='parent']").value = roleNode.dataset.parent;
+    for(let i of document.querySelectorAll(`#create-new-role [role='create']`)) {
+        i.classList.add("hidden");
+    }
+    for(let i of document.querySelectorAll(`#create-new-role [role]:not([role='create'])`)) {
+        i.classList.remove("hidden");
+    }
+}
+
+
 async function deleteRole(event) {
 
     // Confirm
@@ -23,9 +66,6 @@ async function deleteRole(event) {
     }
 
     // Remove the node
-    // let roleNode = document.querySelector(`.role[data-id='${roleId}']`);
-    // roleNode.remove();
-    // window.location.reload();
     getAllRoles();
 }
 
@@ -37,6 +77,8 @@ function createRoleNode(id, name, parentId) {
     let newRole = document.createElement("div");
     newRole.classList.add("role");
     newRole.dataset.id = id;
+    newRole.dataset.name = name;
+    newRole.dataset.parent = parentId || "";
 
     let newRoleId = document.createElement("p");
     newRoleId.innerHTML = `<b>ID</b>: ${id}`;
@@ -63,10 +105,18 @@ function createRoleNode(id, name, parentId) {
     newDeleteButton.onclick = deleteRole;
     newDeleteButton.value = id;
 
+    let newEditButton = document.createElement("button")
+    newEditButton.classList.add("button");
+    newEditButton.textContent = `Edit ${name}`;
+    newEditButton.setAttribute("role", "edit");
+    newEditButton.onclick = editRole;
+    newEditButton.value = id;
+
     newRole.appendChild(newRoleId);
     newRole.appendChild(newRoleName);
     newRole.appendChild(newRoleParent);
     newRole.appendChild(newDeleteButton);
+    newRole.appendChild(newEditButton);
     return newRole;
 }
 
@@ -89,7 +139,7 @@ async function getAllRoles() {
     let data = siteData.data;
 
     // Set up the new options in the dropdown
-    let selectNode = document.querySelector("select[name='role-parent']");
+    let selectNode = document.querySelector("select[name='parent']");
     selectNode.innerHTML = "";
     let defaultSelectOption = document.createElement("option");
     defaultSelectOption.value = "";
@@ -121,14 +171,16 @@ async function createNewRole() {
     button.classList.add("is-loading");
 
     // AJAX our new role
-    let roleNameNode = form.querySelector("[name='role-name']");
+    let roleIdNode = form.querySelector("[name='id']");
+    let roleId = roleIdNode.value;
+    let roleNameNode = form.querySelector("[name='name']");
     let roleName = roleNameNode.value;
-    let roleParentNode = form.querySelector("[name='role-parent']");
+    let roleParentNode = form.querySelector("[name='parent']");
     let roleParent = roleParentNode.value;
     let site = await fetch(
-        "/api/roles",
+        roleId ? `/api/roles?id=${roleId}` : "/api/roles",
         {
-            method: "POST",
+            method: roleId ? "PATCH": "POST",
             body: JSON.stringify({
                 name: roleName,
                 parent: roleParent,
@@ -142,6 +194,10 @@ async function createNewRole() {
         return;
     }
     let data = siteData.data;
+
+    // Delete role if it exists
+    let current = document.querySelector(`.role[data-id='${roleId}']`);
+    if(current) current.remove();
 
     // Add new role to list
     let roleListNode = document.querySelector("#role-list");
