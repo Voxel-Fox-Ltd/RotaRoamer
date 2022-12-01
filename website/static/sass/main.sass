@@ -1,15 +1,42 @@
-@import "bulma-0.9.4/sass/utilities/_all.sass"
+$background-primary: #14213d
+$background-secondary: #000000
+
+$background-primary-invert: #fca311
+$background-secondary-invert: #fca311
+
+$text-primary: #e5e5e5
+$text-secondary: #ffffff
+$text-url: #fca311
 
 
-$scheme-main: #f0f0f0
+html, body
+    background-color: $background-primary
+    color: $text-primary
 
+body
+    padding-bottom: 40px
 
-nav
-    border-bottom: 2px solid $scheme-invert-ter
+.navbar
+    background-color: $background-primary
+    border-bottom: 2px solid $background-primary-invert
     margin-bottom: 15px
 
+.navbar-item
+    color: $text-primary
 
-@import "bulma-0.9.4/bulma.sass"
+.title, .label
+    color: $text-primary
+
+.subtitle
+    color: $text-secondary
+
+.container
+    margin-top: 20px
+
+a
+    color: $text-url
+    &:hover
+        color: $text-secondary
 
 
 // This cat is called Cali.
