@@ -10,7 +10,7 @@ routes = RouteTableDef()
 
 
 @routes.get("/api/people")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_get_people(request: Request):
     """
     Return a list of people for the user
@@ -53,7 +53,7 @@ async def api_get_people(request: Request):
 
 
 @routes.patch("/api/people")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_patch_person(request: Request):
     """
     Update a person's attributes in the database.
@@ -134,7 +134,7 @@ async def api_patch_person(request: Request):
 
 
 @routes.delete("/api/people")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_delete_person(request: Request):
     """
     Delete a person from the database.
@@ -188,7 +188,7 @@ async def api_delete_person(request: Request):
 
 
 @routes.post("/api/people")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_post_create_person(request: Request):
     """
     Add a new role into the user's list of roles.

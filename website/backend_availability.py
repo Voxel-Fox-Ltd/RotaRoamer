@@ -1,5 +1,4 @@
 from datetime import datetime as dt
-import uuid
 
 from aiohttp.web import Request, RouteTableDef, json_response
 import aiohttp_session
@@ -12,7 +11,7 @@ routes = RouteTableDef()
 
 
 @routes.get("/api/user_availability")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_get_user_availability(request: Request):
     """
     Return a dict of users and their related availability for the range of
@@ -92,7 +91,7 @@ async def api_get_user_availability(request: Request):
 
 
 @routes.get("/api/availability")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_get_availbility(request: Request):
     """
     Return a list of availability objects for the user
@@ -147,7 +146,7 @@ async def api_get_availbility(request: Request):
 
 
 @routes.post("/api/availability")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_post_create_availability(request: Request):
     """
     Add a new availability date set.

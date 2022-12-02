@@ -10,7 +10,7 @@ routes = RouteTableDef()
 
 
 @routes.get("/api/roles")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_get_roles(request: Request):
     """
     Return a list of roles for the user
@@ -52,7 +52,7 @@ async def api_get_roles(request: Request):
 
 
 @routes.delete("/api/roles")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_delete_role(request: Request):
     """
     Delete a role from the database.
@@ -106,7 +106,7 @@ async def api_delete_role(request: Request):
 
 
 @routes.post("/api/roles")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_post_create_role(request: Request):
     """
     Add a new role into the user's list of roles.
@@ -184,7 +184,7 @@ async def api_post_create_role(request: Request):
 
 
 @routes.patch("/api/roles")
-@utils.requires_login()
+@utils.requires_login(api_response=True)
 async def api_patch_role(request: Request):
     """
     Edit a role
