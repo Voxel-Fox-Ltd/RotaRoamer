@@ -22,7 +22,7 @@ async def api_get_user_availability(request: Request):
 
     # Get the ID of the logged in user
     session = await aiohttp_session.get_session(request)
-    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    login_id = session.get("id")
     assert login_id, "Missing login ID from session."
 
     # Make sure they've given a valid ID.
@@ -100,7 +100,7 @@ async def api_get_availbility(request: Request):
 
     # Get the ID of the logged in user
     session = await aiohttp_session.get_session(request)
-    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    login_id = session.get("id")
     assert login_id, "Missing login ID from session."
 
     # Add the new role to the database
@@ -174,7 +174,7 @@ async def api_post_create_availability(request: Request):
 
     # Get the ID of the logged in user
     session = await aiohttp_session.get_session(request)
-    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    login_id = session.get("id")
     assert login_id, "Missing login ID from session."
 
     # Add the new role to the database

@@ -1,2 +1,2 @@
-novus[vbu]
+novus[vbu]>=0.2.3
 asyncpg

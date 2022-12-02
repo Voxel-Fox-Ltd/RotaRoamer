@@ -13,13 +13,30 @@ routes = RouteTableDef()
 
 @routes.get("/")
 @template("index.j2")
+@utils.add_session()
 async def index(_: Request):
+    return {}
+
+
+@routes.get("/logout")
+async def logout(request: Request):
+    session = await aiohttp_session.get_session(request)
+    session.clear()
+    session.invalidate()
+    return HTTPFound("/")
+
+
+@routes.get("/login")
+@template("login.j2")
+@utils.add_session()
+async def login(_: Request):
     return {}
 
 
 @routes.get("/dashboard")
 @template("dashboard/index.j2")
 @utils.requires_login()
+@utils.add_session()
 async def dashboard(_: Request):
     return {}
 
@@ -27,6 +44,7 @@ async def dashboard(_: Request):
 @routes.get("/dashboard/roles")
 @template("dashboard/roles.j2")
 @utils.requires_login()
+@utils.add_session()
 async def dashboard_roles(_: Request):
     return {}
 
@@ -34,6 +52,7 @@ async def dashboard_roles(_: Request):
 @routes.get("/dashboard/people")
 @template("dashboard/people.j2")
 @utils.requires_login()
+@utils.add_session()
 async def dashboard_people(_: Request):
     return {}
 
@@ -41,6 +60,7 @@ async def dashboard_people(_: Request):
 @routes.get("/dashboard/availability")
 @template("dashboard/availability.j2")
 @utils.requires_login()
+@utils.add_session()
 async def dashboard_availability(_: Request):
     return {}
 
@@ -48,6 +68,7 @@ async def dashboard_availability(_: Request):
 @routes.get("/dashboard/availability/{id}")
 @template("dashboard/availability_view.j2")
 @utils.requires_login()
+@utils.add_session()
 async def dashboard_availability_view(request: Request):
     """
     Show the admin the filled out availability for the given ID.
@@ -58,7 +79,7 @@ async def dashboard_availability_view(request: Request):
 
     # Get the ID of the logged in user
     session = await aiohttp_session.get_session(request)
-    login_id = "11b1cdef-d0f1-48b7-8ff6-620f67703a21"  # session.get("id")
+    login_id = session.get("id")
     assert login_id, "Missing login ID from session."
 
     # Verify the given ID exists
@@ -86,12 +107,14 @@ async def dashboard_availability_view(request: Request):
 @routes.get("/dashboard/rotas")
 @template("dashboard/rotas.j2")
 @utils.requires_login()
+@utils.add_session()
 async def dashboard_rotas(_: Request):
     return {}
 
 
 @routes.get("/fill/{id}")
 @template("fill.j2")
+@utils.add_session()
 async def fill_availability(request: Request):
     """
     Show the admin the filled out availability for the given ID.

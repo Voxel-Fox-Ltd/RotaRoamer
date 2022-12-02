@@ -1,0 +1,45 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Login{% endblock title %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <form action="javascript:submitLogin();">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input
+                            class="input"
+                            name="email"
+                            type="text"
+                            required />
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input
+                            class="input"
+                            name="password"
+                            type="password"
+                            required />
+                </div>
+                <button
+                        class="button is-primary"
+                        id="submit"
+                        formaction="javascript:submitLogin();">
+                    Login
+                </button>
+                <button
+                        class="button is-primary"
+                        id="submit"
+                        formaction="javascript:submitRegister();">
+                    Register
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ static('js/login.js') }}"></script>
+{% endblock body %}
