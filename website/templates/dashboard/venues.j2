@@ -1,0 +1,63 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Manage Venues{% endblock title %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ static('css/dashboard/venues.css') }}">
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">Manage your venues</h1>
+            <h2 class="subtitle">Set up your venues and where people can work within that venue.</h2>
+            <br />
+
+            <form id="create-new-venue" action="javascript:void(0)">
+                <input class="input" type="hidden" name="id" required />
+                <div class="field">
+                    <label class="label required">Venue name</label>
+                    <div class="control">
+                        <input class="input" type="text" name="name" required />
+                    </div>
+                </div> <!-- field -->
+                <div class="field">
+                    <div class="control">
+                        <button
+                                class="button"
+                                type="submit"
+                                role="create"
+                                formaction="javascript:createNewVenue();">
+                            Create new venue
+                        </button>
+                        <button
+                                class="button hidden"
+                                type="submit"
+                                role="edit"
+                                formaction="javascript:createNewVenue();">
+                            Edit venue
+                        </button>
+                        <button
+                                class="button hidden"
+                                type="submit"
+                                role="cancel"
+                                formaction="javascript:cancelEditVenue();">
+                            Cancel edit
+                        </button>
+                    </div>
+                </div> <!-- field -->
+            </form>
+
+            <div id="venue-list">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ static('js/dashboard/venues.js') }}"></script>
+<script type="text/javascript">getAllVenues();</script>
+{% endblock body %}

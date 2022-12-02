@@ -112,6 +112,14 @@ async def dashboard_rotas(_: Request):
     return {}
 
 
+@routes.get("/dashboard/venues")
+@template("dashboard/venues.j2")
+@utils.requires_login()
+@utils.add_session()
+async def dashboard_venues(_: Request):
+    return {}
+
+
 @routes.get("/fill/{id}")
 @template("fill.j2")
 @utils.add_session()
