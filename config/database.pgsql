@@ -21,32 +21,6 @@ CREATE TABLE IF NOT EXISTS roles(
 );
 
 
--- A table for storing the different venues in which people can work.
-CREATE TABLE IF NOT EXISTS venues(
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
-    rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
-    name CITEXT NOT NULL,
-    index INTEGER NOT NULL,  -- The order of the venues
-    UNIQUE (owner_id, name)  -- No duplicate names
-);
-
-
--- A table for storing the different departments in which people can work.
-CREATE TABLE IF NOT EXISTS venue_positions(
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
-    rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
-    venue_id UUID NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
-    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,  -- The role that can fill this position
-    index INTEGER NOT NULL,  -- The order of the position in the venue
-    start_time TEXT,  -- Nullable and text so the user can put in whatever they want
-    end_time TEXT,  -- Nullable and text so the user can put in whatever they want
-    notes TEXT,  -- Nullable and text so the user can put in whatever they want
-    UNIQUE (owner_id, venue_id, index)  -- No duplicate indexes
-);
-
-
 -- Describing the different people who can have their availability filled in.
 CREATE TABLE IF NOT EXISTS people(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -75,4 +49,38 @@ CREATE TABLE IF NOT EXISTS filled_availability(
     availability_id UUID NOT NULL REFERENCES availability(id) ON DELETE CASCADE,
     person_id UUID NOT NULL REFERENCES people(id) ON DELETE CASCADE,
     availability TEXT[] DEFAULT '{}'
+);
+
+
+-- A table for storing the different rotas that people can work.
+CREATE TABLE IF NOT EXISTS rotas(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    availability_id UUID NOT NULL REFERENCES availability(id) ON DELETE CASCADE
+);
+
+
+-- A table for storing the different venues in which people can work.
+CREATE TABLE IF NOT EXISTS venues(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
+    name CITEXT NOT NULL,
+    index INTEGER NOT NULL,  -- The order of the venues
+    UNIQUE (owner_id, name)  -- No duplicate names
+);
+
+
+-- A table for storing the different departments in which people can work.
+CREATE TABLE IF NOT EXISTS venue_positions(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
+    venue_id UUID NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
+    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,  -- The role that can fill this position
+    index INTEGER NOT NULL,  -- The order of the position in the venue
+    start_time TEXT,  -- Nullable and text so the user can put in whatever they want
+    end_time TEXT,  -- Nullable and text so the user can put in whatever they want
+    notes TEXT,  -- Nullable and text so the user can put in whatever they want
+    UNIQUE (owner_id, venue_id, index)  -- No duplicate indexes
 );

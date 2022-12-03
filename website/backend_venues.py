@@ -58,7 +58,7 @@ async def api_delete_venue(request: Request):
     """
 
     # Validate the request
-    if (r := await utils.ensure_required_keys(request.query, {"id"}, location="query")):
+    if (r := utils.ensure_required_keys(request.query, {"id"}, location="query")):
         return r
     if (r := utils.check_valid_uuid(request.query["id"], api_response=True)):
         return r
@@ -111,7 +111,7 @@ async def api_create_venue(request: Request):
     success, data = await utils.try_read_json(request)
     if not success:
         return data
-    if (r := await utils.ensure_required_keys(data, {"name"})):
+    if (r := utils.ensure_required_keys(data, {"name"})):
         return r
 
     # Get the user's ID
@@ -174,9 +174,9 @@ async def api_patch_venue(request: Request):
     success, data = await utils.try_read_json(request)
     if not success:
         return data
-    if (r := await utils.ensure_required_keys(request.query, {"id"}, location="query")):
+    if (r := utils.ensure_required_keys(request.query, {"id"}, location="query")):
         return r
-    if (r := await utils.ensure_required_keys(data, {"name", "dipslay"}, location="body")):
+    if (r := utils.ensure_required_keys(data, {"name", "dipslay"}, location="body")):
         return r
     if (r := utils.check_valid_uuid(request.query["id"], api_response=True)):
         return r

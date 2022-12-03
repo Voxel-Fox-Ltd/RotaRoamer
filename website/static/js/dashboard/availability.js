@@ -1,33 +1,3 @@
-function getOrdinal(d) {
-    if (d > 3 && d < 21) return "th";
-    switch (d % 10) {
-        case 1: return "st";
-        case 2: return "nd";
-        case 3: return "rd";
-        default: return "th";
-    }
-}
-
-
-function getMonthName(d) {
-    switch (d) {
-        case 1: return "January";
-        case 2: return "February";
-        case 3: return "March";
-        case 4: return "April";
-        case 5: return "May";
-        case 6: return "June";
-        case 7: return "July";
-        case 8: return "August";
-        case 9: return "September";
-        case 10: return "October";
-        case 11: return "November";
-        case 12: return "December";
-    }
-    throw "Invalid date";
-}
-
-
 /**
  * Set the default dates (the nearest Monday and related Sunday) into the
  * date picker for creating a new availability.
@@ -63,17 +33,9 @@ function createAvailabilityNode(id, start, end) {
     let newAvId = document.createElement("p");
     newAvId.innerHTML = `<b>ID</b>: ${id}`;
     let newAvStart = document.createElement("p");
-    {
-        let startOrdinal = getOrdinal(start.getUTCDate());
-        let startMonthName = getMonthName(start.getUTCMonth());
-        newAvStart.innerHTML = `<b>Start</b>: ${start.getUTCDate()}${startOrdinal} ${startMonthName} ${start.getYear() + 1900}`;
-    }
+    newAvStart.innerHTML = `<b>Start</b>: ${getDateString(start)}`;
     let newAvEnd = document.createElement("p");
-    {
-        let endOrdinal = getOrdinal(end.getUTCDate());
-        let endMonthName = getMonthName(end.getUTCMonth());
-        newAvEnd.innerHTML = `<b>End</b>: ${end.getUTCDate()}${endOrdinal} ${endMonthName} ${end.getYear() + 1900}`;
-    }
+    newAvEnd.innerHTML = `<b>End</b>: ${getDateString(end)}`;
     let newAvCheckButton = document.createElement("a");
     newAvCheckButton.href = `/dashboard/availability/${id}`;
     newAvCheckButton.appendChild(document.createTextNode("Check filled availability"));

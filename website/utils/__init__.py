@@ -121,7 +121,7 @@ async def try_read_json(request: Request, **kwargs) -> Tuple[bool, dict | Respon
         )
 
 
-async def ensure_required_keys(
+def ensure_required_keys(
         mapping: Mapping,
         required_keys: set[str],
         *,
