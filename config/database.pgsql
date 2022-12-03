@@ -66,8 +66,7 @@ CREATE TABLE IF NOT EXISTS venues(
     owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
     rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
     name CITEXT NOT NULL,
-    index INTEGER NOT NULL,  -- The order of the venues
-    UNIQUE (owner_id, name)  -- No duplicate names
+    index INTEGER NOT NULL  -- The order of the venues
 );
 
 
@@ -81,6 +80,5 @@ CREATE TABLE IF NOT EXISTS venue_positions(
     index INTEGER NOT NULL,  -- The order of the position in the venue
     start_time TEXT,  -- Nullable and text so the user can put in whatever they want
     end_time TEXT,  -- Nullable and text so the user can put in whatever they want
-    notes TEXT,  -- Nullable and text so the user can put in whatever they want
-    UNIQUE (owner_id, venue_id, index)  -- No duplicate indexes
+    notes TEXT  -- Nullable and text so the user can put in whatever they want
 );

@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Optional, Tuple, Mapping, overload
+from typing import Any, Literal, Optional, Tuple, Mapping, overload
 import uuid
 from datetime import datetime as dt
 
@@ -81,30 +81,73 @@ def check_valid_uuid(id: str, *, api_response: bool = False) -> Optional[Respons
         return False
 
 
+@overload
 def encode_row_as_json(
-        row: dict[str, Any],
-        key_replacements: Optional[dict[str, str]] = None) -> dict:
+        row: dict[str | int, Any],
+        key_replacements: Optional[dict[str | int, str]] = None) -> dict:
+    ...
+
+
+@overload
+def encode_row_as_json(
+        row: list[Any],
+        key_replacements: Optional[dict[str | int, str]] = None) -> list:
+    ...
+
+
+def encode_row_as_json(
+        row: dict[str | int, Any] |  list[Any],
+        key_replacements: Optional[dict[str | int, str]] = None) -> dict | list:
     """
     Encode a row from the database as JSON.
     """
 
+    # Set key replacements up
     key_replacements = key_replacements or dict()
 
+    # Set up output dict
     output = {}
+
+    # Validate input row
+    row_is_list = isinstance(row, list)
+    if row_is_list:
+        row = {
+            i: o
+            for i, o in enumerate(row)
+        }
+    assert not isinstance(row, list)
+
+    # Loop through the row and serialize the items in it
     for i, o in row.items():
         new_key = key_replacements.get(i, i)
         if isinstance(o, uuid.UUID):
             output[new_key] = str(o)
         elif isinstance(o, dt):
             output[new_key] = o.isoformat()
+        elif isinstance(o, (list, dict)):
+            output[new_key] = encode_row_as_json(o)
         elif o is None:
             output[new_key] = None
         else:
             output[new_key] = o
+
+    # Return serialized output
+    if row_is_list:
+        return list(output.values())
     return output
 
 
-async def try_read_json(request: Request, **kwargs) -> Tuple[bool, dict | Response]:
+@overload
+async def try_read_json(request: Request) -> Tuple[Literal[False], Response]:
+    ...
+
+
+@overload
+async def try_read_json(request: Request) -> Tuple[Literal[True], dict]:
+    ...
+
+
+async def try_read_json(request: Request) -> Tuple[bool, dict | Response]:
     """
     Try to read the request's JSON.
     """
@@ -115,7 +158,6 @@ async def try_read_json(request: Request, **kwargs) -> Tuple[bool, dict | Respon
         return False, json_response(
             {
                 "message": "Failed to read JSON in request.",
-                **kwargs,
             },
             status=400,
         )

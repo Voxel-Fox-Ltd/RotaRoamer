@@ -15,6 +15,18 @@
     <div class="columns">
         <div class="column is-full">
             <h1 class="title">Manage your rota</h1>
+            <h2 class="subtitle">Manage the positions and venues for a given rota.</h2>
+            <button
+                    class="button is-success"
+                    onclick="addNewVenueNode();">
+                Create new venue
+            </button>
+            <button
+                    class="button"
+                    onclick="saveAllVenues();">
+                Save all venues
+            </button>
+            <br />
             <br />
             <div id="venue-list"></div>
         </div>
@@ -24,5 +36,5 @@
     <option value="" selected>(Any)</option>
 </div>
 <script type="text/javascript" src="{{ static('js/dashboard/rota_individual.js') }}"></script>
-<script type="text/javascript">getAllVenues();</script>
+<script type="text/javascript">getAllRotaData();</script>
 {% endblock body %}
