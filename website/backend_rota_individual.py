@@ -200,7 +200,7 @@ async def api_put_rota_venues(request: Request):
                         )
                     """,
                     login_id, rota_id, venue_rows[0]["id"],
-                    position["role"],  position_index,
+                    position["role"] or None, position_index,
                     position["start"], position["end"],
                     position["notes"],
                 )

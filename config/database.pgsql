@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS venue_positions(
     owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
     rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
     venue_id UUID NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
-    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,  -- The role that can fill this position
+    role_id UUID REFERENCES roles(id) ON DELETE SET NULL,  -- The role that can fill this position
     index INTEGER NOT NULL,  -- The order of the position in the venue
     start_time TEXT,  -- Nullable and text so the user can put in whatever they want
     end_time TEXT,  -- Nullable and text so the user can put in whatever they want
