@@ -1,0 +1,28 @@
+{% extends "base.j2" %}
+
+
+{% block title %}Rota Roamer - Manage Rota{% endblock title %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ static('css/dashboard/rota_individual.css') }}">
+{% endblock head %}
+
+
+{% block body %}
+<input type="hidden" id="rota-id" value="{{ rota_id }}" />
+<div class="container">
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">Manage your rota</h1>
+            <br />
+            <div id="venue-list"></div>
+        </div>
+    </div>
+</div>
+<div id="roles" data-fetched="0" style="display: none;">
+    <option value="" selected>(Any)</option>
+</div>
+<script type="text/javascript" src="{{ static('js/dashboard/rota_individual.js') }}"></script>
+<script type="text/javascript">getAllVenues();</script>
+{% endblock body %}

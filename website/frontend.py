@@ -112,6 +112,16 @@ async def dashboard_rotas(_: Request):
     return {}
 
 
+@routes.get("/dashboard/rotas/{rota_id}")
+@template("dashboard/rota_individual.j2")
+@utils.requires_login()
+@utils.add_session()
+async def dashboard_rota_individual(request: Request):
+    return {
+        "rota_id": request.match_info['rota_id'],
+    }
+
+
 @routes.get("/fill/{id}")
 @template("fill.j2")
 @utils.add_session()

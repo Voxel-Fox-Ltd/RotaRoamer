@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Literal, Optional, Tuple, Mapping, overload
+from typing import Any, Optional, Tuple, Mapping, overload
 import uuid
 from datetime import datetime as dt
 
