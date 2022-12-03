@@ -25,8 +25,9 @@ CREATE TABLE IF NOT EXISTS roles(
 CREATE TABLE IF NOT EXISTS venues(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
     name CITEXT NOT NULL,
-    display_name TEXT,  -- In the case we want to generate a custom name
+    index INTEGER NOT NULL,  -- The order of the venues
     UNIQUE (owner_id, name)  -- No duplicate names
 );
 
@@ -35,6 +36,7 @@ CREATE TABLE IF NOT EXISTS venues(
 CREATE TABLE IF NOT EXISTS venue_positions(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     owner_id UUID NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
+    rota_id UUID NOT NULL REFERENCES rotas(id) ON DELETE CASCADE,
     venue_id UUID NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
     role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,  -- The role that can fill this position
     index INTEGER NOT NULL,  -- The order of the position in the venue
