@@ -42,7 +42,7 @@ async function saveAllVenues() {
 
     // If the API call was successful, update the UI
     if (response.status === 200) {
-        getAllRotas();
+        getAllRotaData();
     }
 }
 
